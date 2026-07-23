@@ -37,9 +37,9 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 - [x] 25. Design end-of-life events, sustainability metrics, dashboards, and exports; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 - [x] 26. Implement end-of-life events, sustainability metrics, dashboards, and exports; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 - [x] 27. Verify end-of-life events, sustainability metrics, dashboards, and exports with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 28. Design tamper tests, E2E supply journey, observability, security review, and deployment docs; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 29. Implement tamper tests, E2E supply journey, observability, security review, and deployment docs; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 30. Verify tamper tests, E2E supply journey, observability, security review, and deployment docs with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 28. Design tamper tests, E2E supply journey, observability, security review, and deployment docs; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 29. Implement tamper tests, E2E supply journey, observability, security review, and deployment docs; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 30. Verify tamper tests, E2E supply journey, observability, security review, and deployment docs with tests, failure cases, telemetry, documentation, and a reviewable demo.
 
 ## Task completion checklist
 

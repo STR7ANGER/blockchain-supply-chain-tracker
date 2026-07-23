@@ -1,14 +1,16 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.5.5/schema.json",
   "formatter": { "enabled": true, "indentStyle": "space" },
-  "linter": { "enabled": true, "rules": { "preset": "none" } },
+  "linter": { "enabled": true, "rules": { "preset": "recommended" } },
   "files": {
     "includes": [
       "**",
       "!**/node_modules",
       "!**/.next",
       "!**/dist",
-      "!**/target"
+      "!**/target",
+      "!**/playwright-report",
+      "!**/test-results"
     ]
   }
 }

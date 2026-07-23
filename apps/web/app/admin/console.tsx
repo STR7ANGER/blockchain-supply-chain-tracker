@@ -102,11 +102,7 @@ export function OnboardingConsole() {
         <button type="submit">Create organization</button>
         <label>
           Organization ID
-          <input
-            value={org}
-            onChange={(e) => setOrg(e.target.value)}
-            required
-          />
+          <input value={org} onChange={(e) => setOrg(e.target.value)} />
         </label>
       </form>
       <form className="panel form" onSubmit={createRecord}>

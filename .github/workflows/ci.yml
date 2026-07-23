@@ -14,7 +14,39 @@ jobs:
       - run: npm run db:generate
       - run: npm run check
       - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
       - run: docker compose config --quiet
+      - run: docker build -f Dockerfile.api -t provenance-api:test .
+      - run: docker build -f Dockerfile.web -t provenance-web:test .
+      - run: npm audit --audit-level=high
+  migrations:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: provenance
+          POSTGRES_USER: provenance
+          POSTGRES_PASSWORD: provenance
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U provenance -d provenance"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://provenance:provenance@localhost:5432/provenance?schema=public
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
+      - run: npm run db:generate
+      - run: npx prisma migrate deploy
+      - run: npm run db:seed
+      - run: npm run db:seed
+      - run: npx prisma migrate status
   proof:
     runs-on: ubuntu-latest
     steps:
@@ -26,5 +58,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
-        with: { go-version: "1.24", cache-dependency-path: services/indexer/go.sum }
+        with: { go-version: "1.24", cache: false }
       - run: npm run indexer:test
