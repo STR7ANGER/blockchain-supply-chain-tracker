@@ -6,6 +6,7 @@ export default function Home() {
         <strong>TRACEPROOF</strong>
         <span>
           <Link href="/verify">Verify</Link> ·{" "}
+          <Link href="/dashboard">Impact</Link> ·{" "}
           <Link href="/admin">Operations</Link>
         </span>
       </nav>

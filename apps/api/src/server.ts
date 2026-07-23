@@ -10,6 +10,10 @@ import { CertificateService } from "./modules/certificates/service.js";
 import { PrismaCustodyRepository } from "./modules/custody/prisma-repository.js";
 import { CustodyService } from "./modules/custody/service.js";
 import { createProvenanceGraph } from "./modules/provenance/graphql.js";
+import { PrismaRecallRepository } from "./modules/recalls/prisma-repository.js";
+import { RecallService } from "./modules/recalls/service.js";
+import { PrismaSustainabilityRepository } from "./modules/sustainability/prisma-repository.js";
+import { SustainabilityService } from "./modules/sustainability/service.js";
 
 const environment = parseEnvironment(process.env);
 const metrics = new Metrics();
@@ -35,12 +39,19 @@ const certificates = new CertificateService(
   telemetry,
 );
 const graph = createProvenanceGraph(catalog);
+const recalls = new RecallService(new PrismaRecallRepository(), metrics);
+const sustainability = new SustainabilityService(
+  new PrismaSustainabilityRepository(),
+  metrics,
+);
 serve({
   fetch: createApp({
     catalog,
     custody,
     certificates,
     graph,
+    recalls,
+    sustainability,
     adminKey: environment.ADMIN_API_KEY,
     metrics,
     operatorToken: environment.OPERATOR_METRICS_TOKEN,

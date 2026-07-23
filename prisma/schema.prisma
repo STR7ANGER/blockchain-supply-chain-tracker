@@ -43,23 +43,31 @@ enum RecallStatus {
   CLOSED
 }
 
+enum NotificationStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+}
+
 model Organization {
-  id             String                 @id @default(cuid())
-  slug           String                 @unique
-  name           String
-  facilities     Facility[]
-  memberships    Membership[]
-  suppliers      Supplier[]
-  products       Product[]
-  batches        Batch[]
-  items          Item[]
-  events         ProvenanceEvent[]
-  certificates   Certificate[]
-  recalls        Recall[]
-  sustainability SustainabilityMetric[]
-  shipments      Shipment[]
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime               @updatedAt
+  id               String                 @id @default(cuid())
+  slug             String                 @unique
+  name             String
+  facilities       Facility[]
+  memberships      Membership[]
+  suppliers        Supplier[]
+  products         Product[]
+  batches          Batch[]
+  items            Item[]
+  events           ProvenanceEvent[]
+  certificates     Certificate[]
+  recalls          Recall[]
+  sustainability   SustainabilityMetric[]
+  shipments        Shipment[]
+  notificationJobs NotificationJob[]
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
 }
 
 model Membership {
@@ -74,17 +82,18 @@ model Membership {
 }
 
 model Facility {
-  id              String                 @id @default(cuid())
-  organizationId  String
-  name            String
-  code            String
-  countryCode     String
-  organization    Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  batches         Batch[]
-  custodyFrom     ProvenanceEvent[]      @relation("CustodyFrom")
-  custodyTo       ProvenanceEvent[]      @relation("CustodyTo")
-  acknowledgments RecallAcknowledgment[]
-  createdAt       DateTime               @default(now())
+  id               String                 @id @default(cuid())
+  organizationId   String
+  name             String
+  code             String
+  countryCode      String
+  organization     Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  batches          Batch[]
+  custodyFrom      ProvenanceEvent[]      @relation("CustodyFrom")
+  custodyTo        ProvenanceEvent[]      @relation("CustodyTo")
+  acknowledgments  RecallAcknowledgment[]
+  notificationJobs NotificationJob[]
+  createdAt        DateTime               @default(now())
 
   @@unique([organizationId, code])
 }
@@ -211,20 +220,40 @@ model Certificate {
 }
 
 model Recall {
-  id              String                 @id @default(cuid())
-  organizationId  String
-  productId       String?
-  batchId         String?
-  reason          String
-  severity        RecallSeverity
-  status          RecallStatus           @default(OPEN)
-  organization    Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  product         Product?               @relation(fields: [productId], references: [id], onDelete: Restrict)
-  batch           Batch?                 @relation(fields: [batchId], references: [id], onDelete: Restrict)
-  acknowledgments RecallAcknowledgment[]
-  createdAt       DateTime               @default(now())
+  id               String                 @id @default(cuid())
+  organizationId   String
+  productId        String?
+  batchId          String?
+  reason           String
+  severity         RecallSeverity
+  status           RecallStatus           @default(OPEN)
+  organization     Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  product          Product?               @relation(fields: [productId], references: [id], onDelete: Restrict)
+  batch            Batch?                 @relation(fields: [batchId], references: [id], onDelete: Restrict)
+  acknowledgments  RecallAcknowledgment[]
+  notificationJobs NotificationJob[]
+  createdAt        DateTime               @default(now())
 
   @@index([organizationId, status, severity])
+}
+
+model NotificationJob {
+  id             String             @id @default(cuid())
+  organizationId String
+  recallId       String
+  facilityId     String
+  status         NotificationStatus @default(PENDING)
+  attempts       Int                @default(0)
+  scheduledAt    DateTime           @default(now())
+  lastError      String?
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  recall         Recall             @relation(fields: [recallId], references: [id], onDelete: Cascade)
+  facility       Facility           @relation(fields: [facilityId], references: [id], onDelete: Restrict)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@unique([recallId, facilityId])
+  @@index([status, scheduledAt])
 }
 
 model RecallAcknowledgment {
@@ -241,6 +270,7 @@ model RecallAcknowledgment {
 
 model SustainabilityMetric {
   id                 String       @id @default(cuid())
+  externalEventId    String       @unique
   organizationId     String
   itemId             String
   event              EventKind

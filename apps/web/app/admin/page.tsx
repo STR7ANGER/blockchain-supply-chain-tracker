@@ -5,7 +5,10 @@ export default function AdminPage() {
     <main>
       <nav>
         <Link href="/">TRACEPROOF</Link>
-        <Link href="/verify">Public verification</Link>
+        <span>
+          <Link href="/dashboard">Impact dashboard</Link> ·{" "}
+          <Link href="/verify">Public verification</Link>
+        </span>
       </nav>
       <header className="page-header">
         <p className="eyebrow">OPERATIONS</p>

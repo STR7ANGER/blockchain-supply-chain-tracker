@@ -85,6 +85,7 @@ export const recallAcknowledge = z.object({
   note: z.string().trim().max(240).optional(),
 });
 export const sustainabilityInput = z.object({
+  eventId: id,
   organizationId: id,
   itemId: id,
   event: z.enum(["RECYCLED", "REUSED", "DISPOSED"]),

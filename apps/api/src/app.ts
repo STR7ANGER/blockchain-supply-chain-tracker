@@ -11,11 +11,17 @@ import { createCertificateRoutes } from "./modules/certificates/routes.js";
 import type { CertificateService } from "./modules/certificates/service.js";
 import { createCustodyRoutes } from "./modules/custody/routes.js";
 import type { CustodyService } from "./modules/custody/service.js";
+import { createRecallRoutes } from "./modules/recalls/routes.js";
+import type { RecallService } from "./modules/recalls/service.js";
+import { createSustainabilityRoutes } from "./modules/sustainability/routes.js";
+import type { SustainabilityService } from "./modules/sustainability/service.js";
 export const createApp = (
   options: {
     catalog?: CatalogService;
     custody?: CustodyService;
     certificates?: CertificateService;
+    recalls?: RecallService;
+    sustainability?: SustainabilityService;
     graph?: { fetch(request: Request): Response | Promise<Response> };
     adminKey?: string;
     metrics?: Metrics;
@@ -31,6 +37,10 @@ export const createApp = (
   app.use("*", async (context, next) => {
     const start = performance.now();
     await next();
+    options.metrics?.increment("http_requests_total", {
+      method: context.req.method,
+      status_class: `${Math.floor(context.res.status / 100)}xx`,
+    });
     console.info(
       JSON.stringify({
         level: "info",
@@ -72,6 +82,16 @@ export const createApp = (
       ["GET", "POST"],
       "/graphql",
       (c) => options.graph?.fetch(c.req.raw) ?? c.notFound(),
+    );
+  if (options.recalls && options.adminKey)
+    app.route(
+      "/v1/recalls",
+      createRecallRoutes(options.recalls, options.adminKey),
+    );
+  if (options.sustainability && options.adminKey)
+    app.route(
+      "/v1/sustainability",
+      createSustainabilityRoutes(options.sustainability, options.adminKey),
     );
   return app;
 };
