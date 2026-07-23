@@ -4,16 +4,16 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 
 ## Day 1 — Foundation and first vertical slice (Tasks 1–10)
 
-- [ ] 1. Design workspace, chain sandbox, databases, Docker, CI, and event taxonomy; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 2. Implement workspace, chain sandbox, databases, Docker, CI, and event taxonomy; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 3. Verify workspace, chain sandbox, databases, Docker, CI, and event taxonomy with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 4. Design organizations, facilities, roles, suppliers, and onboarding UI; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 5. Implement organizations, facilities, roles, suppliers, and onboarding UI; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 6. Verify organizations, facilities, roles, suppliers, and onboarding UI with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 7. Design product, batch, serial identity, QR generation, and scan experience; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 8. Implement product, batch, serial identity, QR generation, and scan experience; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 9. Verify product, batch, serial identity, QR generation, and scan experience with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 10. Design Rust proof registry, hash anchoring, permissions, and invariant tests; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 1. Design workspace, chain sandbox, databases, Docker, CI, and event taxonomy; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 2. Implement workspace, chain sandbox, databases, Docker, CI, and event taxonomy; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 3. Verify workspace, chain sandbox, databases, Docker, CI, and event taxonomy with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 4. Design organizations, facilities, roles, suppliers, and onboarding UI; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 5. Implement organizations, facilities, roles, suppliers, and onboarding UI; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 6. Verify organizations, facilities, roles, suppliers, and onboarding UI with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 7. Design product, batch, serial identity, QR generation, and scan experience; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 8. Implement product, batch, serial identity, QR generation, and scan experience; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 9. Verify product, batch, serial identity, QR generation, and scan experience with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 10. Design Rust proof registry, hash anchoring, permissions, and invariant tests; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 
 ## Day 2 — Core workflows and integrations (Tasks 11–20)
 
@@ -44,4 +44,3 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 ## Task completion checklist
 
 A task is complete only when code is formatted and typed, tests pass, migrations are reproducible, UI states are handled, authorization is enforced, logs contain no secrets, and relevant docs are updated. Track blockers beneath the task instead of silently widening scope.
-

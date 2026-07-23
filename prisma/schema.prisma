@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  OPERATOR
+  AUDITOR
+  SUPPLIER
+}
+
+enum EventKind {
+  PRODUCT_CREATED
+  BATCH_CREATED
+  ITEM_SERIALIZED
+  TRANSFERRED
+  SHIPPED
+  RECEIVED
+  CONDITION_RECORDED
+  CERTIFICATE_ANCHORED
+  RECALLED
+  RECALL_ACKNOWLEDGED
+  RECYCLED
+  REUSED
+  DISPOSED
+}
+
+enum RecallSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RecallStatus {
+  OPEN
+  CLOSED
+}
+
+model Organization {
+  id             String                 @id @default(cuid())
+  slug           String                 @unique
+  name           String
+  facilities     Facility[]
+  memberships    Membership[]
+  suppliers      Supplier[]
+  products       Product[]
+  batches        Batch[]
+  items          Item[]
+  events         ProvenanceEvent[]
+  certificates   Certificate[]
+  recalls        Recall[]
+  sustainability SustainabilityMetric[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+}
+
+model Membership {
+  id             String       @id @default(cuid())
+  organizationId String
+  email          String
+  role           Role
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, email])
+}
+
+model Facility {
+  id              String                 @id @default(cuid())
+  organizationId  String
+  name            String
+  code            String
+  countryCode     String
+  organization    Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  batches         Batch[]
+  custodyFrom     ProvenanceEvent[]      @relation("CustodyFrom")
+  custodyTo       ProvenanceEvent[]      @relation("CustodyTo")
+  acknowledgments RecallAcknowledgment[]
+  createdAt       DateTime               @default(now())
+
+  @@unique([organizationId, code])
+}
+
+model Supplier {
+  id             String       @id @default(cuid())
+  organizationId String
+  name           String
+  externalRef    String
+  contactEmail   String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, externalRef])
+}
+
+model Product {
+  id             String       @id @default(cuid())
+  organizationId String
+  name           String
+  sku            String
+  description    String?
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  batches        Batch[]
+  recalls        Recall[]
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, sku])
+}
+
+model Batch {
+  id             String       @id @default(cuid())
+  organizationId String
+  productId      String
+  facilityId     String
+  lotCode        String
+  manufacturedAt DateTime
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Restrict)
+  facility       Facility     @relation(fields: [facilityId], references: [id], onDelete: Restrict)
+  items          Item[]
+  recalls        Recall[]
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, lotCode])
+  @@index([productId, manufacturedAt])
+}
+
+model Item {
+  id                String                 @id @default(cuid())
+  organizationId    String
+  batchId           String
+  serial            String                 @unique
+  publicTokenHash   String                 @unique
+  currentFacilityId String?
+  organization      Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  batch             Batch                  @relation(fields: [batchId], references: [id], onDelete: Restrict)
+  events            ProvenanceEvent[]
+  certificates      Certificate[]
+  sustainability    SustainabilityMetric[]
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  @@index([organizationId, batchId])
+}
+
+model ProvenanceEvent {
+  id              String       @id @default(cuid())
+  externalEventId String       @unique
+  organizationId  String
+  itemId          String
+  kind            EventKind
+  fromFacilityId  String?
+  toFacilityId    String?
+  payload         Json
+  payloadHash     String
+  previousHash    String?
+  chainHash       String       @unique
+  occurredAt      DateTime
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  item            Item         @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  fromFacility    Facility?    @relation("CustodyFrom", fields: [fromFacilityId], references: [id], onDelete: Restrict)
+  toFacility      Facility?    @relation("CustodyTo", fields: [toFacilityId], references: [id], onDelete: Restrict)
+  createdAt       DateTime     @default(now())
+
+  @@index([organizationId, itemId, occurredAt])
+}
+
+model Certificate {
+  id              String       @id @default(cuid())
+  organizationId  String
+  itemId          String
+  kind            String
+  filename        String
+  mediaType       String
+  contentHash     String
+  mongoDocumentId String
+  verifiedAt      DateTime?
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  item            Item         @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  createdAt       DateTime     @default(now())
+
+  @@unique([itemId, contentHash])
+}
+
+model Recall {
+  id              String                 @id @default(cuid())
+  organizationId  String
+  productId       String?
+  batchId         String?
+  reason          String
+  severity        RecallSeverity
+  status          RecallStatus           @default(OPEN)
+  organization    Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  product         Product?               @relation(fields: [productId], references: [id], onDelete: Restrict)
+  batch           Batch?                 @relation(fields: [batchId], references: [id], onDelete: Restrict)
+  acknowledgments RecallAcknowledgment[]
+  createdAt       DateTime               @default(now())
+
+  @@index([organizationId, status, severity])
+}
+
+model RecallAcknowledgment {
+  id         String   @id @default(cuid())
+  recallId   String
+  facilityId String
+  note       String?
+  recall     Recall   @relation(fields: [recallId], references: [id], onDelete: Cascade)
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Restrict)
+  createdAt  DateTime @default(now())
+
+  @@unique([recallId, facilityId])
+}
+
+model SustainabilityMetric {
+  id                 String       @id @default(cuid())
+  organizationId     String
+  itemId             String
+  event              EventKind
+  weightGrams        Int
+  carbonAvoidedGrams Int
+  occurredAt         DateTime
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  item               Item         @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  createdAt          DateTime     @default(now())
+
+  @@index([organizationId, event, occurredAt])
+}
