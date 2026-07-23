@@ -13,6 +13,7 @@
     "build": "npm run build --workspaces --if-present",
     "lint": "biome check .",
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "pretest": "npm run build --workspace @provenance/contracts",
     "test": "npm run test --workspaces --if-present",
     "check": "npm run lint && npm run typecheck && npm test",
     "db:generate": "prisma generate",
