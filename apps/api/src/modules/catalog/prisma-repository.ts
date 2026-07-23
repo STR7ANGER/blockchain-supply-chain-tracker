@@ -45,6 +45,10 @@ export class PrismaCatalogRepository implements CatalogRepository {
     const payloadHash = createHash("sha256")
       .update(canonical(payload))
       .digest("hex");
+    const occurredAt = new Date();
+    const chainHash = createHash("sha256")
+      .update(`:${payloadHash}:ITEM_SERIALIZED:${occurredAt.toISOString()}`)
+      .digest("hex");
     return prisma.$transaction(async (tx) => {
       const item = await tx.item.create({
         data: {
@@ -65,8 +69,8 @@ export class PrismaCatalogRepository implements CatalogRepository {
           toFacilityId: batch.facilityId,
           payload,
           payloadHash,
-          chainHash: createHash("sha256").update(payloadHash).digest("hex"),
-          occurredAt: new Date(),
+          chainHash,
+          occurredAt,
         },
       });
       return item;

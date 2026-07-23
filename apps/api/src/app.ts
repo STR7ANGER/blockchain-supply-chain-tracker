@@ -7,9 +7,16 @@ import {
   createPublicRoutes,
 } from "./modules/catalog/routes.js";
 import type { CatalogService } from "./modules/catalog/service.js";
+import { createCertificateRoutes } from "./modules/certificates/routes.js";
+import type { CertificateService } from "./modules/certificates/service.js";
+import { createCustodyRoutes } from "./modules/custody/routes.js";
+import type { CustodyService } from "./modules/custody/service.js";
 export const createApp = (
   options: {
     catalog?: CatalogService;
+    custody?: CustodyService;
+    certificates?: CertificateService;
+    graph?: { fetch(request: Request): Response | Promise<Response> };
     adminKey?: string;
     metrics?: Metrics;
     operatorToken?: string;
@@ -53,5 +60,18 @@ export const createApp = (
     );
   if (options.catalog)
     app.route("/v1/public", createPublicRoutes(options.catalog));
+  if (options.custody)
+    app.route("/v1/custody", createCustodyRoutes(options.custody));
+  if (options.certificates && options.adminKey)
+    app.route(
+      "/v1/certificates",
+      createCertificateRoutes(options.certificates, options.adminKey),
+    );
+  if (options.graph)
+    app.on(
+      ["GET", "POST"],
+      "/graphql",
+      (c) => options.graph?.fetch(c.req.raw) ?? c.notFound(),
+    );
   return app;
 };

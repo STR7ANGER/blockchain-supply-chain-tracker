@@ -57,6 +57,7 @@ model Organization {
   certificates   Certificate[]
   recalls        Recall[]
   sustainability SustainabilityMetric[]
+  shipments      Shipment[]
   createdAt      DateTime               @default(now())
   updatedAt      DateTime               @updatedAt
 }
@@ -144,10 +145,30 @@ model Item {
   events            ProvenanceEvent[]
   certificates      Certificate[]
   sustainability    SustainabilityMetric[]
+  shipments         Shipment[]
   createdAt         DateTime               @default(now())
   updatedAt         DateTime               @updatedAt
 
   @@index([organizationId, batchId])
+}
+
+model Shipment {
+  id              String       @id @default(cuid())
+  externalEventId String       @unique
+  organizationId  String
+  itemId          String
+  fromFacilityId  String?
+  toFacilityId    String
+  status          String
+  condition       Json
+  departedAt      DateTime
+  receivedAt      DateTime?
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  item            Item         @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([organizationId, status, departedAt])
 }
 
 model ProvenanceEvent {

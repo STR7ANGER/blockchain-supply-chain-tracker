@@ -17,16 +17,16 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 
 ## Day 2 — Core workflows and integrations (Tasks 11–20)
 
-- [ ] 11. Implement Rust proof registry, hash anchoring, permissions, and invariant tests; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 12. Verify Rust proof registry, hash anchoring, permissions, and invariant tests with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 13. Design custody transfer commands, shipment events, signatures, and idempotency; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 14. Implement custody transfer commands, shipment events, signatures, and idempotency; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 15. Verify custody transfer commands, shipment events, signatures, and idempotency with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 16. Design Go chain/event indexer and canonical provenance read model; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 17. Implement Go chain/event indexer and canonical provenance read model; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 18. Verify Go chain/event indexer and canonical provenance read model with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 19. Design certificate uploads, MongoDB metadata, proof verification, and public portal; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 20. Implement certificate uploads, MongoDB metadata, proof verification, and public portal; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 11. Implement Rust proof registry, hash anchoring, permissions, and invariant tests; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 12. Verify Rust proof registry, hash anchoring, permissions, and invariant tests with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 13. Design custody transfer commands, shipment events, signatures, and idempotency; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 14. Implement custody transfer commands, shipment events, signatures, and idempotency; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 15. Verify custody transfer commands, shipment events, signatures, and idempotency with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 16. Design Go chain/event indexer and canonical provenance read model; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 17. Implement Go chain/event indexer and canonical provenance read model; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 18. Verify Go chain/event indexer and canonical provenance read model with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 19. Design certificate uploads, MongoDB metadata, proof verification, and public portal; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 20. Implement certificate uploads, MongoDB metadata, proof verification, and public portal; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 
 ## Day 3 — Advanced behavior and production hardening (Tasks 21–30)
 
